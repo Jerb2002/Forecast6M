@@ -56,9 +56,17 @@ the workbook reads from them.
 
 Twelve sheets: one per country for 2026, 2027 and 2028, **week by week under its month**.
 
-Cash in — revenue, revenue duty, VAT on sales. Cash out — COGS, COGS duty, factoring fee,
-each manpower and SG&A line separately, VAT on purchases, and the VAT settlement. Then net
-cash flow for the week.
+Cash in — revenue, revenue duty, VAT on sales. Cash out — COGS, COGS duty, each manpower
+and SG&A line separately, VAT on purchases, and the VAT settlement. Then net cash flow for
+the week. The factoring fee sits below the net as a memo, inside no total: the bank keeps
+it out of what it pays us, so the revenue line is already net of it and nothing is ever
+paid out to settle it.
+
+In front of those twelve is **`Check`**, which is where I would start. It puts each
+country's budget beside its own cash flow sheets, pre-VAT, and bridges the two: the
+factoring fee the bank keeps, the lines that never reach cash, and the years the tail of
+the horizon lands in. What is left is the difference, and it is nought in all four
+countries.
 
 **Nothing is typed on these sheets.** Every cell is a lookup. They are the output.
 
