@@ -26,8 +26,10 @@ Open the file and you land on **Contents** — every sheet in the workbook, grou
 linked. Each sheet links back to it from its top-left corner. Nothing is more than one
 click away.
 
-The groups run left to right in the order the numbers move through them. Coloured tabs mark
-where one group ends and the next begins.
+The groups run left to right in the order you would read them: the **cash flow** first,
+because it is the answer; then the **budget** it comes from; then the sheets that decide
+when money moves; then the script's working. Coloured tabs mark where one group ends and
+the next begins.
 
 **Blue means you can type in it. Black means the model worked it out.** That holds on every
 sheet in the file.
@@ -36,9 +38,38 @@ sheet in the file.
 
 ## What each section contains
 
-### 1 & 2 — Budget 2026 and Budget 2027
+### 1 — Cash flow
 
-Eight sheets: one per country, per year. **This is your budget, in your own format** —
+**Dashboard CF** opens the group and is the one-screen view: pick a country and a year and
+read its cash month by month, with a comparison beside it. Nothing on it is typed.
+
+Behind it are twelve sheets: one per country for 2026, 2027 and 2028, **week by week under
+its month**.
+
+Cash in — revenue, revenue duty, VAT on sales. Cash out — COGS, COGS duty, each manpower
+and SG&A line separately, VAT on purchases, and the VAT settlement. Then net cash flow for
+the week. The factoring fee sits below the net as a memo, inside no total: the bank keeps
+it out of what it pays us, so the revenue line is already net of it and nothing is ever
+paid out to settle it.
+
+Between the dashboard and those twelve is **`Check`**, which is where I would start. It puts each
+country's budget beside its own cash flow sheets, pre-VAT, and bridges the two: the
+factoring fee the bank keeps, the lines that never reach cash, and the years the tail of
+the horizon lands in. What is left is the difference, and it is nought in all four
+countries.
+
+**Nothing is typed on these sheets.** Every cell is a lookup. They are the output.
+
+2028 is there because an invoice raised late in 2027 on 60-day terms, paid late, lands in
+early 2028 — and a forecast that dropped it would understate nothing but would simply lose
+the money.
+
+### 2 — Budget
+
+**Dashboard Budget** opens the group: pick a country and a year and read the P&L, with a
+second country beside it to compare. Nothing on it is typed.
+
+Behind it are eight sheets: one per country, per year. **This is your budget, in your own format** —
 months across, lines down, in DKK thousands.
 
 Revenue and COGS split into Courier, Freight Forward and Duty; then Manpower, then SG&A line
@@ -52,29 +83,7 @@ Subtotals and margins are formulas — you type the lines, not the totals.
 **These eight sheets are the only place the business's own figures go.** Everything else in
 the workbook reads from them.
 
-### 3 — Cash flow
-
-Twelve sheets: one per country for 2026, 2027 and 2028, **week by week under its month**.
-
-Cash in — revenue, revenue duty, VAT on sales. Cash out — COGS, COGS duty, each manpower
-and SG&A line separately, VAT on purchases, and the VAT settlement. Then net cash flow for
-the week. The factoring fee sits below the net as a memo, inside no total: the bank keeps
-it out of what it pays us, so the revenue line is already net of it and nothing is ever
-paid out to settle it.
-
-In front of those twelve is **`Check`**, which is where I would start. It puts each
-country's budget beside its own cash flow sheets, pre-VAT, and bridges the two: the
-factoring fee the bank keeps, the lines that never reach cash, and the years the tail of
-the horizon lands in. What is left is the difference, and it is nought in all four
-countries.
-
-**Nothing is typed on these sheets.** Every cell is a lookup. They are the output.
-
-2028 is there because an invoice raised late in 2027 on 60-day terms, paid late, lands in
-early 2028 — and a forecast that dropped it would understate nothing but would simply lose
-the money.
-
-### 4 — Inputs
+### 3 — Inputs
 
 The sheets that decide **when** money moves, as opposed to how much.
 
@@ -84,7 +93,6 @@ The sheets that decide **when** money moves, as opposed to how much.
 | **Factoring** | Which countries sell invoices to the bank, in which months, and on what share, advance rate and fee | **Yes** |
 | **COGS delay** | How many days late we actually pay each courier, by the month its invoice falls due. Buttons beside the table filter it to the row you want | **Yes** |
 | **Cost timing** | One row per country and cost line: the rule it normally pays on, then a column per month for the days it actually ran late | **Yes** |
-| **Dashboard** | Pick a country and a year and read the P&L, with a second country beside it to compare | No, formulas |
 
 **Cost timing** is the sheet worth two minutes of the meeting. Each of the twelve cost lines
 pays on one of four rules — last working day of the month, the 15th, spread evenly across
@@ -92,7 +100,7 @@ the month's working days, or no cash effect at all (which is what Bad debt is). 
 across the sheet are where you say *"the rent waited three weeks in March"*, and the cash
 flow moves accordingly — April then carries March's rent as well as its own.
 
-### 5 — Python Data
+### 4 — Python Data
 
 Six sheets the script writes and rewrites on every run: the working-day calendar, the
 invoices by due date, the dated costs, the dated payments, the VAT rules and the VAT

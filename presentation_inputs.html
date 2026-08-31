@@ -1,0 +1,699 @@
+<title>Forecast Inputs to Agree</title>
+
+<style>
+  /* Same design system as presentation.html - this deck runs straight after it. */
+  :root {
+    --white: #ffffff;
+    --panel: #f1f4f8;
+    --ink: #10151c;
+    --muted: #5d6875;
+    --rule: #d5dbe2;
+    --blue: #1f6fd0;
+    --orange: #e05a1e;
+    --green: #10916a;
+
+    --sans: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --mono: "Cascadia Mono", "Consolas", "SF Mono", ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
+    background: var(--white);
+    color: var(--ink);
+    font-family: var(--sans);
+  }
+
+  /* Fixed 1920x1080 stage, scaled uniformly. Nothing reflows. */
+  #stage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1920px;
+    height: 1080px;
+    transform-origin: center center;
+    background: var(--white);
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 88px 120px 84px;
+    display: flex;
+    flex-direction: column;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 220ms ease;
+  }
+  .slide.active { visibility: visible; opacity: 1; pointer-events: auto; }
+  @media (prefers-reduced-motion: reduce) { .slide { transition: none; } }
+
+  .tag {
+    font-family: var(--mono);
+    font-size: 24px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--blue);
+    padding-bottom: 18px;
+    border-bottom: 2px solid var(--rule);
+  }
+
+  h1 {
+    font-size: 64px;
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    margin: 36px 0 0;
+    max-width: 26ch;
+    text-wrap: balance;
+  }
+
+  .lede {
+    font-size: 29px;
+    line-height: 1.4;
+    color: var(--muted);
+    margin: 22px 0 0;
+    max-width: 104ch;
+  }
+  .lede b { color: var(--ink); font-weight: 600; }
+
+  /* The picture. Sits between the lede and the ask band. */
+  figure {
+    margin: 0;
+    padding: 52px 0 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 30px;
+  }
+  figure svg { display: block; width: 100%; height: auto; }
+  text { font-family: var(--mono); }
+  .t-sans { font-family: var(--sans); }
+
+  /* --- the four tab groups on the workbook slide -------------------------- */
+  .groups { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; }
+  .group { border-top: 6px solid var(--rule); padding-top: 24px; }
+  .group.a { border-top-color: var(--blue); }
+  .group.b { border-top-color: var(--ink); }
+  .group.c { border-top-color: var(--green); }
+  .verdict {
+    font-family: var(--mono);
+    font-size: 27px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin: 0 0 6px;
+    color: var(--muted);
+  }
+  .group.a .verdict { color: var(--blue); }
+  .group.b .verdict { color: var(--ink); }
+  .group.c .verdict { color: var(--green); }
+  .group h3 {
+    font-size: 27px;
+    font-weight: 600;
+    margin: 0 0 22px;
+    color: var(--ink);
+  }
+  .pills { display: flex; flex-wrap: wrap; gap: 10px; }
+  .pill {
+    font-family: var(--mono);
+    font-size: 19px;
+    padding: 8px 13px;
+    background: var(--panel);
+    color: var(--muted);
+  }
+
+  /* --- on/off chips ------------------------------------------------------- */
+  .chips { display: flex; gap: 20px; }
+  .chip {
+    font-family: var(--mono);
+    font-size: 26px;
+    letter-spacing: 0.04em;
+    padding: 14px 26px;
+    border: 2px solid var(--rule);
+    color: var(--muted);
+  }
+  .chip.on { border-color: var(--green); color: var(--green); font-weight: 600; }
+
+  /* --- the cost-rule rows: label left, month strip right ------------------ */
+  .rules { display: flex; flex-direction: column; gap: 26px; }
+  .strip-head, .rule {
+    display: grid;
+    grid-template-columns: 620px 1fr;
+    gap: 44px;
+    align-items: center;
+  }
+  .strip-head span {
+    font-family: var(--mono);
+    font-size: 19px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+  }
+  .rule h4 { font-size: 26px; font-weight: 600; margin: 0 0 7px; }
+  .rule p { font-size: 20px; line-height: 1.35; color: var(--muted); margin: 0; }
+
+  /* --- the three VAT questions -------------------------------------------- */
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
+  .card { border-top: 6px solid var(--orange); padding-top: 24px; }
+  .card h3 { font-size: 31px; font-weight: 600; margin: 0 0 20px; line-height: 1.2; }
+  .card .assumed {
+    font-family: var(--mono);
+    font-size: 20px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 20px;
+  }
+  .card p.then { font-size: 24px; line-height: 1.4; color: var(--ink); margin: 0; }
+
+  /* --- the ask band at the foot ------------------------------------------- */
+  .ask {
+    margin: 0;
+    padding-top: 26px;
+    border-top: 2px solid var(--rule);
+    display: flex;
+    gap: 40px;
+    align-items: baseline;
+  }
+  .ask h4 {
+    font-family: var(--mono);
+    font-size: 22px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin: 0;
+    flex: 0 0 210px;
+  }
+  .ask p { font-size: 27px; line-height: 1.35; margin: 0; max-width: 88ch; }
+  .ask b { font-weight: 600; }
+
+  .foot {
+    position: absolute;
+    left: 120px;
+    right: 120px;
+    bottom: 34px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: var(--mono);
+    font-size: 22px;
+    color: var(--muted);
+  }
+
+  /* cover */
+  .cover { justify-content: center; }
+  .cover h1 { font-size: 104px; max-width: 20ch; margin: 0; }
+  .cover .lede { font-size: 34px; margin-top: 40px; }
+  .cover .tag { border: 0; padding: 0; margin-bottom: 26px; }
+
+  /* nav */
+  #nav { position: fixed; right: 22px; bottom: 18px; display: flex; gap: 8px; z-index: 10; }
+  #nav button {
+    font-family: var(--mono);
+    font-size: 15px;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--rule);
+    background: var(--white);
+    color: var(--ink);
+    cursor: pointer;
+    border-radius: 0;
+  }
+  #nav button:hover { background: var(--panel); }
+  #nav button:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+</style>
+
+<div id="stage">
+
+  <!-- ============ cover ============ -->
+  <section class="slide active cover">
+    <div class="tag">Six-month forecast</div>
+    <h1>Inputs we need from you</h1>
+    <p class="lede">Six things to agree. Everything else the model already knows.</p>
+  </section>
+
+  <!-- ============ 01 the workbook ============ -->
+  <section class="slide">
+    <div class="tag">01 &nbsp;/&nbsp; The workbook</div>
+    <h1>Four groups of tabs</h1>
+    <p class="lede">The first sheet is <b>Contents</b>. Every tab links back to it.</p>
+
+    <figure>
+      <div class="groups">
+        <div class="group a">
+          <p class="verdict">Read this</p>
+          <h3>Cash flow</h3>
+          <div class="pills">
+            <span class="pill">Dashboard CF</span>
+            <span class="pill">Check</span>
+            <span class="pill">CF DNK 2026</span>
+            <span class="pill">+ 11 more</span>
+          </div>
+        </div>
+        <div class="group b">
+          <p class="verdict">Paste budget</p>
+          <h3>Budget</h3>
+          <div class="pills">
+            <span class="pill">Dashboard Budget</span>
+            <span class="pill">P&amp;L DNK 2026</span>
+            <span class="pill">+ 7 more</span>
+          </div>
+        </div>
+        <div class="group c">
+          <p class="verdict">Set assumptions</p>
+          <h3>Inputs</h3>
+          <div class="pills">
+            <span class="pill">Factoring</span>
+            <span class="pill">COGS delay</span>
+            <span class="pill">Cost timing</span>
+          </div>
+        </div>
+        <div class="group">
+          <p class="verdict">Do not touch</p>
+          <h3>Python data</h3>
+          <div class="pills">
+            <span class="pill">Work day share</span>
+            <span class="pill">Due date cash</span>
+            <span class="pill">VAT cash</span>
+            <span class="pill">+ 3 more</span>
+          </div>
+        </div>
+      </div>
+
+      <svg viewBox="0 0 1680 120" role="img"
+           aria-label="Blue cells are typed by you, black cells are calculated by the workbook">
+        <rect x="0" y="30" width="1680" height="2" fill="#d5dbe2"/>
+        <rect x="0" y="64" width="34" height="34" fill="#1f6fd0" opacity="0.16"/>
+        <rect x="0" y="64" width="34" height="34" fill="none" stroke="#1f6fd0" stroke-width="2"/>
+        <text x="54" y="90" font-size="26" fill="#10151c" class="t-sans">Blue cells &mdash; you type in them</text>
+        <rect x="620" y="64" width="34" height="34" fill="#f1f4f8"/>
+        <rect x="620" y="64" width="34" height="34" fill="none" stroke="#d5dbe2" stroke-width="2"/>
+        <text x="674" y="90" font-size="26" fill="#10151c" class="t-sans">Black cells &mdash; the workbook calculates them</text>
+      </svg>
+    </figure>
+
+    <div class="ask">
+      <h4>You touch</h4>
+      <p>Groups <b>2</b> and <b>3</b>. Nothing else.</p>
+    </div>
+  </section>
+
+  <!-- ============ 02 providers ============ -->
+  <section class="slide">
+    <div class="tag">02 &nbsp;/&nbsp; Providers</div>
+    <h1>Who we buy from</h1>
+    <p class="lede">COGS is paid on the <b>provider&rsquo;s</b> terms, so the model needs the split.</p>
+
+    <figure>
+      <svg viewBox="0 0 1680 400" role="img"
+           aria-label="COGS spend split eighty per cent to Provider 1 on Net plus 45 days and twenty per cent to Provider 2 on Net plus 60 days, the same in all four countries">
+        <!-- legend -->
+        <rect x="0" y="0" width="26" height="26" fill="#1f6fd0"/>
+        <text x="42" y="21" font-size="25" fill="#10151c" class="t-sans">Provider 1</text>
+        <text x="216" y="21" font-size="25" fill="#5d6875">Net +45 days</text>
+        <rect x="480" y="0" width="26" height="26" fill="#e05a1e"/>
+        <text x="522" y="21" font-size="25" fill="#10151c" class="t-sans">Provider 2</text>
+        <text x="696" y="21" font-size="25" fill="#5d6875">Net +60 days</text>
+
+        <g font-size="26">
+          <!-- Denmark -->
+          <text x="0" y="112" fill="#10151c" class="t-sans">Denmark</text>
+          <rect x="300" y="80" width="1104" height="46" fill="#1f6fd0"/>
+          <rect x="1404" y="80" width="276" height="46" fill="#e05a1e"/>
+          <text x="330" y="113" fill="#ffffff" font-weight="600">80%</text>
+          <text x="1434" y="113" fill="#ffffff" font-weight="600">20%</text>
+          <!-- Norway -->
+          <text x="0" y="192" fill="#10151c" class="t-sans">Norway</text>
+          <rect x="300" y="160" width="1104" height="46" fill="#1f6fd0"/>
+          <rect x="1404" y="160" width="276" height="46" fill="#e05a1e"/>
+          <text x="330" y="193" fill="#ffffff" font-weight="600">80%</text>
+          <text x="1434" y="193" fill="#ffffff" font-weight="600">20%</text>
+          <!-- Sweden -->
+          <text x="0" y="272" fill="#10151c" class="t-sans">Sweden</text>
+          <rect x="300" y="240" width="1104" height="46" fill="#1f6fd0"/>
+          <rect x="1404" y="240" width="276" height="46" fill="#e05a1e"/>
+          <text x="330" y="273" fill="#ffffff" font-weight="600">80%</text>
+          <text x="1434" y="273" fill="#ffffff" font-weight="600">20%</text>
+          <!-- United States -->
+          <text x="0" y="352" fill="#10151c" class="t-sans">United States</text>
+          <rect x="300" y="320" width="1104" height="46" fill="#1f6fd0"/>
+          <rect x="1404" y="320" width="276" height="46" fill="#e05a1e"/>
+          <text x="330" y="353" fill="#ffffff" font-weight="600">80%</text>
+          <text x="1434" y="353" fill="#ffffff" font-weight="600">20%</text>
+        </g>
+      </svg>
+    </figure>
+
+    <div class="ask">
+      <h4>We need</h4>
+      <p>The <b>real providers</b>, their <b>terms</b>, and the <b>split per country</b>. All of the
+        above is a placeholder.</p>
+    </div>
+  </section>
+
+  <!-- ============ 03 cogs delay ============ -->
+  <section class="slide">
+    <div class="tag">03 &nbsp;/&nbsp; Paying providers</div>
+    <h1>And how late we pay them</h1>
+    <p class="lede">The term sets the due date. The delay sets when the money really leaves.</p>
+
+    <figure>
+      <svg viewBox="0 0 1680 380" role="img"
+           aria-label="Provider 1 is due at 45 days and paid at 75 days, thirty days late. Provider 2 is due at 60 days and paid on the due date.">
+        <!-- axis -->
+        <g font-size="22" fill="#5d6875">
+          <text x="380" y="24" text-anchor="middle">0</text>
+          <text x="596" y="24" text-anchor="middle">15</text>
+          <text x="813" y="24" text-anchor="middle">30</text>
+          <text x="1030" y="24" text-anchor="middle">45</text>
+          <text x="1246" y="24" text-anchor="middle">60</text>
+          <text x="1463" y="24" text-anchor="middle">75</text>
+          <text x="1680" y="24" text-anchor="end">90</text>
+        </g>
+        <g stroke="#e6eaf0">
+          <line x1="596" y1="40" x2="596" y2="300"/>
+          <line x1="813" y1="40" x2="813" y2="300"/>
+          <line x1="1030" y1="40" x2="1030" y2="300"/>
+          <line x1="1246" y1="40" x2="1246" y2="300"/>
+          <line x1="1463" y1="40" x2="1463" y2="300"/>
+        </g>
+        <line x1="380" y1="40" x2="380" y2="300" stroke="#d5dbe2" stroke-width="2"/>
+
+        <!-- provider 1 -->
+        <text x="0" y="98" font-size="27" fill="#10151c" class="t-sans">Provider 1</text>
+        <rect x="380" y="66" width="650" height="46" fill="#1f6fd0"/>
+        <rect x="1030" y="66" width="433" height="46" fill="#e05a1e"/>
+        <text x="410" y="99" font-size="24" fill="#ffffff">the term &mdash; 45 days</text>
+        <text x="1060" y="99" font-size="24" fill="#ffffff">30 days late</text>
+        <circle cx="1463" cy="89" r="11" fill="#10151c"/>
+        <text x="1463" y="150" font-size="24" fill="#10151c" text-anchor="middle" class="t-sans">paid</text>
+
+        <!-- provider 2 -->
+        <text x="0" y="228" font-size="27" fill="#10151c" class="t-sans">Provider 2</text>
+        <rect x="380" y="196" width="866" height="46" fill="#1f6fd0"/>
+        <text x="410" y="229" font-size="24" fill="#ffffff">the term &mdash; 60 days</text>
+        <circle cx="1246" cy="219" r="11" fill="#10151c"/>
+        <text x="1246" y="280" font-size="24" fill="#10151c" text-anchor="middle" class="t-sans">paid, on time</text>
+
+        <!-- key -->
+        <line x1="0" y1="326" x2="1680" y2="326" stroke="#d5dbe2"/>
+        <rect x="0" y="350" width="24" height="24" fill="#1f6fd0"/>
+        <text x="40" y="370" font-size="24" fill="#5d6875" class="t-sans">the term, from the provider</text>
+        <rect x="560" y="350" width="24" height="24" fill="#e05a1e"/>
+        <text x="600" y="370" font-size="24" fill="#5d6875" class="t-sans">days late &mdash; this is the part you set, month by month</text>
+      </svg>
+    </figure>
+
+    <div class="ask">
+      <h4>We need</h4>
+      <p>The <b>days late</b> per provider and country, and any month that runs differently.</p>
+    </div>
+  </section>
+
+  <!-- ============ 04 factoring ============ -->
+  <section class="slide">
+    <div class="tag">04 &nbsp;/&nbsp; Factoring</div>
+    <h1>Denmark sells invoices to the bank</h1>
+    <p class="lede">A factored invoice ignores the customer&rsquo;s terms and pays on the bank&rsquo;s clock.</p>
+
+    <figure>
+      <div class="chips">
+        <span class="chip on">Denmark &nbsp;ON</span>
+        <span class="chip">Norway &nbsp;off</span>
+        <span class="chip">Sweden &nbsp;off</span>
+        <span class="chip">United States &nbsp;off</span>
+      </div>
+
+      <svg viewBox="0 0 1680 330" role="img"
+           aria-label="Half of Denmark's monthly invoicing is factored. Of that half, eighty per cent is advanced by the bank on the Thursday and twenty per cent arrives after the customer pays. The other half of the month is invoiced direct on the customer's own terms.">
+        <text x="0" y="22" font-size="23" fill="#5d6875">ONE MONTH OF DANISH INVOICING</text>
+
+        <!-- factored 50%, split 80/20 -->
+        <rect x="0" y="46" width="672" height="72" fill="#1f6fd0"/>
+        <rect x="672" y="46" width="168" height="72" fill="#1f6fd0" opacity="0.42"/>
+        <!-- direct 50% -->
+        <rect x="840" y="46" width="840" height="72" fill="#f1f4f8"/>
+        <rect x="840" y="46" width="840" height="72" fill="none" stroke="#d5dbe2" stroke-width="2"/>
+
+        <text x="24" y="92" font-size="27" fill="#ffffff" font-weight="600">40% advance</text>
+        <text x="690" y="92" font-size="23" fill="#10151c" font-weight="600">10%</text>
+        <text x="866" y="92" font-size="27" fill="#10151c" font-weight="600">50% invoiced direct</text>
+
+        <!-- brace over the factored half -->
+        <path d="M0 132 L0 146 L840 146 L840 132" fill="none" stroke="#5d6875"/>
+        <text x="420" y="180" font-size="25" fill="#5d6875" text-anchor="middle">50% sold to the bank</text>
+
+        <!-- when each piece lands -->
+        <g stroke="#d5dbe2">
+          <line x1="336" y1="214" x2="336" y2="238"/>
+          <line x1="756" y1="214" x2="756" y2="238"/>
+          <line x1="1260" y1="214" x2="1260" y2="238"/>
+        </g>
+        <text x="336" y="270" font-size="25" fill="#e05a1e" text-anchor="middle" font-weight="600">THURSDAY</text>
+        <text x="336" y="306" font-size="24" fill="#10151c" text-anchor="middle" class="t-sans">of the run week</text>
+        <text x="756" y="270" font-size="25" fill="#e05a1e" text-anchor="middle" font-weight="600">+1 DAY</text>
+        <text x="756" y="306" font-size="24" fill="#10151c" text-anchor="middle" class="t-sans">after the customer pays</text>
+        <text x="1260" y="270" font-size="25" fill="#5d6875" text-anchor="middle" font-weight="600">CUSTOMER&rsquo;S TERMS</text>
+        <text x="1260" y="306" font-size="24" fill="#10151c" text-anchor="middle" class="t-sans">as normal</text>
+      </svg>
+    </figure>
+
+    <div class="ask">
+      <h4>We need</h4>
+      <p>Which <b>countries and months</b>. Then the rates: 50% sold, 80% advance,
+        <b>0.1% fee</b> &mdash; the fee is our guess.</p>
+    </div>
+  </section>
+
+  <!-- ============ 05 cost timing ============ -->
+  <section class="slide">
+    <div class="tag">05 &nbsp;/&nbsp; Costs</div>
+    <h1>When each cost line pays</h1>
+    <p class="lede">Twelve lines, four rules, set per country. A dropdown on the Cost timing sheet.</p>
+
+    <figure>
+      <div class="rules">
+        <div class="strip-head">
+          <span></span>
+          <span><span>Start of month</span><span>Month end</span></span>
+        </div>
+
+        <div class="rule">
+          <div>
+            <h4>Last working day</h4>
+            <p>Manpower courier &middot; Manpower freight forward &middot; Staff cost &middot; Rent
+              &middot; SLA &middot; External Assistance</p>
+          </div>
+          <svg viewBox="0 0 960 52" aria-label="one payment on the last working day">
+            <line x1="0" y1="50" x2="960" y2="50" stroke="#e6eaf0" stroke-width="2"/>
+            <rect x="930" y="4" width="26" height="46" fill="#1f6fd0"/>
+          </svg>
+        </div>
+
+        <div class="rule">
+          <div>
+            <h4>The 15th</h4>
+            <p>Vehicle</p>
+          </div>
+          <svg viewBox="0 0 960 52" aria-label="one payment in the middle of the month">
+            <line x1="0" y1="50" x2="960" y2="50" stroke="#e6eaf0" stroke-width="2"/>
+            <rect x="452" y="4" width="26" height="46" fill="#1f6fd0"/>
+          </svg>
+        </div>
+
+        <div class="rule">
+          <div>
+            <h4>Spread over the working days</h4>
+            <p>IT &middot; Sales &amp; Marketing &middot; Travel &amp; Rep &middot; Admin &amp; Misc</p>
+          </div>
+          <svg viewBox="0 0 960 52" aria-label="an equal payment on every working day of the month">
+            <line x1="0" y1="50" x2="960" y2="50" stroke="#e6eaf0" stroke-width="2"/>
+            <g fill="#1f6fd0">
+              <rect x="4" y="28" width="16" height="22"/><rect x="47" y="28" width="16" height="22"/>
+              <rect x="91" y="28" width="16" height="22"/><rect x="134" y="28" width="16" height="22"/>
+              <rect x="178" y="28" width="16" height="22"/><rect x="221" y="28" width="16" height="22"/>
+              <rect x="265" y="28" width="16" height="22"/><rect x="308" y="28" width="16" height="22"/>
+              <rect x="352" y="28" width="16" height="22"/><rect x="395" y="28" width="16" height="22"/>
+              <rect x="439" y="28" width="16" height="22"/><rect x="482" y="28" width="16" height="22"/>
+              <rect x="526" y="28" width="16" height="22"/><rect x="569" y="28" width="16" height="22"/>
+              <rect x="613" y="28" width="16" height="22"/><rect x="656" y="28" width="16" height="22"/>
+              <rect x="700" y="28" width="16" height="22"/><rect x="743" y="28" width="16" height="22"/>
+              <rect x="787" y="28" width="16" height="22"/><rect x="830" y="28" width="16" height="22"/>
+              <rect x="874" y="28" width="16" height="22"/><rect x="917" y="28" width="16" height="22"/>
+            </g>
+          </svg>
+        </div>
+
+        <div class="rule">
+          <div>
+            <h4>No cash effect</h4>
+            <p>Bad debt</p>
+          </div>
+          <svg viewBox="0 0 960 52" aria-label="nothing is paid at all">
+            <line x1="0" y1="50" x2="960" y2="50" stroke="#e6eaf0" stroke-width="2"
+                  stroke-dasharray="8 10"/>
+          </svg>
+        </div>
+      </div>
+    </figure>
+
+    <div class="ask">
+      <h4>We need</h4>
+      <p>The <b>rule for each line, per country</b>. Plus any month a line ran late &mdash; rent
+        three weeks late in March pushes it into April.</p>
+    </div>
+  </section>
+
+  <!-- ============ 06 vat clocks ============ -->
+  <section class="slide">
+    <div class="tag">06 &nbsp;/&nbsp; VAT</div>
+    <h1>How long we hold the VAT</h1>
+    <p class="lede">We collect it on sales, pay it on purchases, and hand the difference over later.</p>
+
+    <figure>
+      <svg viewBox="0 0 1680 400" role="img"
+           aria-label="VAT collected sits with the business for 25 to 77 days in Denmark, 40 to 122 days in Norway, 26 to 58 days in Sweden, and does not arise in the United States.">
+        <g font-size="22" fill="#5d6875">
+          <text x="470" y="24" text-anchor="middle">0</text>
+          <text x="748" y="24" text-anchor="middle">30 days</text>
+          <text x="1026" y="24" text-anchor="middle">60</text>
+          <text x="1304" y="24" text-anchor="middle">90</text>
+          <text x="1582" y="24" text-anchor="middle">120</text>
+        </g>
+        <g stroke="#e6eaf0">
+          <line x1="748" y1="40" x2="748" y2="330"/>
+          <line x1="1026" y1="40" x2="1026" y2="330"/>
+          <line x1="1304" y1="40" x2="1304" y2="330"/>
+          <line x1="1582" y1="40" x2="1582" y2="330"/>
+        </g>
+        <line x1="470" y1="40" x2="470" y2="330" stroke="#d5dbe2" stroke-width="2"/>
+
+        <g font-size="27" class="t-sans">
+          <text x="0" y="98" fill="#10151c">Denmark</text>
+          <text x="0" y="188" fill="#10151c">Norway</text>
+          <text x="0" y="278" fill="#10151c">Sweden</text>
+          <text x="0" y="358" fill="#10151c">United States</text>
+        </g>
+        <g font-size="22" fill="#5d6875">
+          <text x="230" y="98">monthly</text>
+          <text x="230" y="188">every 2 months</text>
+          <text x="230" y="278">monthly</text>
+          <text x="230" y="358">no VAT</text>
+        </g>
+
+        <!-- 25 to 77 -->
+        <rect x="702" y="66" width="482" height="44" fill="#1f6fd0"/>
+        <text x="726" y="97" font-size="24" fill="#ffffff">25 &ndash; 77 days</text>
+        <!-- 40 to 122 -->
+        <rect x="841" y="156" width="760" height="44" fill="#e05a1e"/>
+        <text x="865" y="187" font-size="24" fill="#ffffff">40 &ndash; 122 days</text>
+        <!-- 26 to 58 -->
+        <rect x="711" y="246" width="297" height="44" fill="#10916a"/>
+        <text x="735" y="277" font-size="24" fill="#ffffff">26 &ndash; 58</text>
+        <!-- none -->
+        <line x1="470" y1="348" x2="1680" y2="348" stroke="#d5dbe2" stroke-dasharray="8 10"/>
+        <text x="486" y="340" font-size="24" fill="#5d6875">nothing is charged, and nothing is settled</text>
+      </svg>
+    </figure>
+
+    <div class="ask">
+      <h4>Read it as</h4>
+      <p>Cash we have already collected, sitting with us before it goes to the government.
+        <b>Norway holds it longest.</b></p>
+    </div>
+  </section>
+
+  <!-- ============ 07 vat, what to confirm ============ -->
+  <section class="slide">
+    <div class="tag">07 &nbsp;/&nbsp; VAT</div>
+    <h1>Three things to confirm</h1>
+    <p class="lede">The rest of the VAT rules are fixed by law. These three depend on your business.</p>
+
+    <figure>
+      <div class="cards">
+        <div class="card">
+          <h3>Denmark: monthly or quarterly?</h3>
+          <p class="assumed">Assumed &mdash; monthly</p>
+          <p class="then">Quarterly moves January&rsquo;s VAT payment from February to <b>June</b>.
+            It is the biggest single swing in the model.</p>
+        </div>
+        <div class="card">
+          <h3>Vehicle line: vans or cars?</h3>
+          <p class="assumed">Assumed &mdash; vans</p>
+          <p class="then">VAT on vans comes back at the next settlement. VAT on <b>passenger cars
+            never comes back</b>.</p>
+        </div>
+        <div class="card">
+          <h3>Rent: is the landlord VAT-registered?</h3>
+          <p class="assumed">Assumed &mdash; yes, all of them</p>
+          <p class="then">Commercial letting is exempt unless the landlord registers.
+            <b>If not, that rent carries no VAT.</b></p>
+        </div>
+      </div>
+    </figure>
+
+    <div class="ask">
+      <h4>We need</h4>
+      <p>An answer to each. All three are one cell on our side.</p>
+    </div>
+  </section>
+
+</div>
+
+<div id="nav">
+  <button id="prev" aria-label="Previous slide">&#8592;</button>
+  <button id="next" aria-label="Next slide">&#8594;</button>
+</div>
+
+<script>
+  const stage = document.getElementById("stage");
+  const slides = [...document.querySelectorAll(".slide")];
+  let at = 0;
+
+  // Fixed stage, scaled uniformly. Nothing inside reflows.
+  function fit() {
+    const scale = Math.min(innerWidth / 1920, innerHeight / 1080);
+    stage.style.transform = `translate(-50%, -50%) scale(${scale})`;
+  }
+
+  function show(index) {
+    at = Math.max(0, Math.min(slides.length - 1, index));
+    slides.forEach((slide, i) => slide.classList.toggle("active", i === at));
+    stamp();
+  }
+
+  // The counter is written rather than typed into every slide, so it cannot fall behind.
+  function stamp() {
+    slides.forEach((slide, i) => {
+      let foot = slide.querySelector(".foot");
+      if (!foot) {
+        foot = document.createElement("div");
+        foot.className = "foot";
+        slide.appendChild(foot);
+      }
+      foot.innerHTML = i === 0 ? "" :
+        `<span>Inputs to agree</span><span>${String(i).padStart(2, "0")} / ${slides.length - 1}</span>`;
+    });
+  }
+
+  addEventListener("resize", fit);
+  addEventListener("keydown", event => {
+    if (["ArrowRight", "PageDown", " "].includes(event.key)) { event.preventDefault(); show(at + 1); }
+    if (["ArrowLeft", "PageUp"].includes(event.key)) { event.preventDefault(); show(at - 1); }
+    if (event.key === "Home") show(0);
+    if (event.key === "End") show(slides.length - 1);
+  });
+  document.getElementById("next").onclick = () => show(at + 1);
+  document.getElementById("prev").onclick = () => show(at - 1);
+
+  fit();
+  show(0);
+</script>
