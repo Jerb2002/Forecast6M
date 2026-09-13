@@ -9,3 +9,7 @@ __pycache__/
 
 #other folders
 archive/
+
+# throwaway notebook backups kept beside the wayfinder tickets
+.scratch/**/assets/*.ipynb
+.scratch/**/*.bak
