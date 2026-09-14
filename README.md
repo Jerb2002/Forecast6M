@@ -16,6 +16,37 @@ duty, VAT and factoring legs.
 | `cfo_first_pass_email.md` | The walkthrough that went to the CFO with the file. |
 | `requirements.txt` | Python dependencies. |
 
+## Running it
+
+There are two routines, and they never happen on the same day.
+
+### The Monday paste (Excel only)
+
+1. Open the live workbook. On `Short-term input`, type the new Monday into `As of Monday`.
+   Check: the window block reads `this week`, and the five headers over the paste block show
+   the new week keys.
+2. Paste the five weeks of revenue cash over the four country rows. Check the figures against
+   the short-term tool by eye. Do it in this order: the figures carry no date of their own, so a
+   moved Monday over unpasted figures shifts them a week without saying so.
+3. Save. The notebook is not opened.
+
+### A rebuild (the notebook)
+
+Every run of the notebook writes a fresh workbook. Nothing typed into the old file survives, so
+after a rebuild carry these across by hand from the previous file, sheet by sheet:
+
+- [ ] The eight P&L sheets, `P&L DNK 2026` through `P&L USA 2027`, including row 5 (Actual /
+      Budget). `Budget input` reads both the amounts and the labels off them; nothing to do there.
+- [ ] `Factoring`
+- [ ] `COGS delay`
+- [ ] `Cost timing`, including the month columns
+- [ ] `Short-term input`: the `As of Monday` cell and the four rows of five figures
+- [ ] `Dashboard CF`: the `Basis` dropdown in C7 (Budget only / Short-term override /
+      Difference). A fresh build opens on Budget only.
+
+Then open the file in Excel and check the `Check` sheet still ties. Run the notebook with the
+Python that has its dependencies (`py -3.11` on this machine; `requirements.txt` lists them).
+
 ## Work in progress: the short-term revenue overlay
 
 Current effort. The goal is a workbook where a CFO pastes five weeks of short-term revenue

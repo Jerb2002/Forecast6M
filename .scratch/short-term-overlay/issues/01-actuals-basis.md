@@ -1,8 +1,10 @@
 # Actuals: does "the past" mean real amounts, or real cash?
 
 Type: grilling
-Status: open
+Status: resolved
 Blocked by: -
+Claimed by: claude-opus-5 session 0964d4b6
+Claimed at: 2026-09-14T08:40:00+02:00
 
 ## Question
 
@@ -77,3 +79,36 @@ The CF is weekly now; `Actuals/Budget` is monthly, so a month boundary cannot la
 
 Recommended **B**, which also shrinks ticket 06 to a P&L-only job. `TODAY()` was rejected: the sheet
 would change under the reader, so a saved or emailed copy would not match.
+
+### 2026-09-14 - resolved
+
+**Neither A nor B. Past weeks are not shown in the cash flow at all.**
+
+The user's words: "we will not be showing in the cash flow model the actuals at all ... for
+anything that comes before [the five weeks], we will have that as blank or a message ... so that
+any user knows the forecast does not apply to those periods."
+
+What that fixes:
+
+- **No actuals basis in the CF.** There is no second paste of bank cash, and no re-labelled
+  "real amount, modelled week". The left-hand end of the sheet under an override is empty or
+  marked *past*, and nothing else.
+- **Only under Override and Difference.** *Budget only* keeps every week of the horizon as it
+  does today, so the `Check` sheet still ties CF to Budget on the budget basis. (Q3, accepted.)
+- **The boundary is the first week of the paste block on `Short-term input`.** Past = every CF
+  week whose key sorts before that first header. Live = that week and everything after. No other
+  cell, and not `TODAY()`. The header is worked out from `As of Monday` as ticket 02 built it;
+  the user's "no" to naming the cell was about which thing is the source of truth (the block's
+  first week), not about how it gets there. Ticket 02 stands.
+- **The `Actual` label on the P&L side is the CFO's.** The eight P&L sheets and `Budget input`
+  are paste targets mirroring the CFO's own budget workbook, refreshed roughly quarterly, and
+  the actual months come in with that paste. The notebook constant `FIRST_BUDGET_MONTH` only
+  matters for what the notebook *writes over* on a re-run - which is ticket 04's question. Ticket
+  06 is closed into 04.
+
+What it opens:
+
+- How a past week *reads* on a CF sheet (blank cells, a marker, greyed columns) and what a month
+  subtotal does when its weeks are partly past: ticket 09, prototype, after 05.
+- Scoring the prediction against what happened needs bank actuals, which this decision keeps out
+  of the workbook. Moved to Out of scope on the map.

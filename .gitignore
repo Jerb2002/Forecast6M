@@ -13,3 +13,4 @@ archive/
 # throwaway notebook backups kept beside the wayfinder tickets
 .scratch/**/assets/*.ipynb
 .scratch/**/*.bak
+.scratch/**/assets/*.xlsx

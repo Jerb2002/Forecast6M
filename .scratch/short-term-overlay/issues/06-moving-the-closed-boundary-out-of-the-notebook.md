@@ -1,7 +1,7 @@
 # Moving the actual/budget boundary out of the notebook
 
 Type: task
-Status: open
+Status: closed (out of scope)
 Blocked by: 01
 
 ## Question
@@ -22,3 +22,13 @@ row by row when they paste a new budget.
 Nothing downstream reads the column today - it is a caption on the dashboard and a label on the
 P&L. If ticket 01 makes the cash model read it, say so here, because that turns a label into a
 load-bearing input.
+
+## Comments
+
+### 2026-09-14 - closed by ticket 01, folded into 04
+
+Ticket 01 decided the cash flow shows no actuals at all, and the user explained that the `Actual`
+months arrive with the CFO's quarterly paste of the budget workbook. So the boundary is already an
+input: the paste. `FIRST_BUDGET_MONTH` only decides what the notebook stamps when it re-runs and
+rewrites the P&L sheets, which is the re-run rule ticket 04 settles. Nothing here is left to do on
+its own.
