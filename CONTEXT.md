@@ -37,8 +37,9 @@ _Avoid_: short-term forecast (that is the tool, not the figures), override numbe
 
 **Bank cash**:
 What reaches our account in a week: the unfactored receipts plus the bank's legs on the factored
-ones (advance, retention less fee). What a cash flow sheet shows; under an override, the paste
-plus the budget's factored legs.
+ones (advance, retention less fee). What a cash flow sheet shows, in two groups with a total each:
+`Paid by the customer` and `From factoring`. Under an override the paste stands in for the first
+group, whose total in a pasted week is the paste itself; the second keeps the budget's figures.
 _Avoid_: receipts (that is the customer's side), revenue cash
 
 **Budget paste**:
@@ -60,8 +61,8 @@ _Avoid_: refresh, re-run, regenerate, update
 
 **Human-owned sheet**:
 A sheet whose contents are typed or pasted in Excel and carried across a rebuild by hand: the
-eight P&L sheets, `Factoring`, `COGS delay`, `Cost timing`, `Short-term input`, and the basis
-switch cell.
+eight P&L sheets, `Factoring`, `COGS delay`, `Cost timing`, `Short-term input`, the Rate,
+Charged and Reclaimed columns of `VAT`, and the basis switch cell.
 _Avoid_: input sheet (that is a tab group), configurable sheet
 
 **Notebook-owned sheet**:
@@ -73,7 +74,7 @@ _Avoid_: python sheet, generated sheet, output sheet
 
 **Basis**:
 Which figures a cash flow sheet shows: Budget only, Short-term override, or Difference. One
-dropdown on `Dashboard CF`, the workbook name `Basis`; every CF sheet reads it and none has a
+dropdown on `CF OVERVIEW ALL`, the workbook name `Basis`; every CF sheet reads it and none has a
 switch of its own.
 _Avoid_: mode, view, scenario
 

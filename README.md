@@ -41,7 +41,7 @@ after a rebuild carry these across by hand from the previous file, sheet by shee
 - [ ] `COGS delay`
 - [ ] `Cost timing`, including the month columns
 - [ ] `Short-term input`: the `As of Monday` cell and the four rows of five figures
-- [ ] `Dashboard CF`: the `Basis` dropdown in C7 (Budget only / Short-term override /
+- [ ] `CF OVERVIEW ALL`: the `Basis` dropdown in C7 (Budget only / Short-term override /
       Difference). A fresh build opens on Budget only.
 
 Then open the file in Excel and check the `Check` sheet still ties. Run the notebook with the
